@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ToolCard } from "@/components/tool-card"
 import { ToolDialog } from "@/components/tool-dialog"
 import { EmbedDialog } from "@/components/embed-dialog"
+import { UserProfile } from "@/components/auth/user-profile"
 import { supabase, isSupabaseConfigured, mockTools } from "@/lib/supabase"
 import { type Tool, CATEGORIES } from "@/lib/types"
 import { useToast } from "@/hooks/use-toast"
@@ -229,7 +230,8 @@ export function Dashboard() {
               <h1 className="text-4xl font-bold text-stone-gray mb-2">AI Software Library</h1>
               <p className="text-stone-gray/80">Centralized repository for AI tools used by Silent Partners</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
+              <UserProfile />
               <Button
                 onClick={() => setIsEmbedDialogOpen(true)}
                 variant="outline"
