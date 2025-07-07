@@ -40,7 +40,7 @@ Create a `.env.local` file in your project root with the following variables:
 ```bash
 # Auth0 Configuration
 AUTH0_SECRET='use [openssl rand -hex 32] to generate a 32 bytes value'
-AUTH0_BASE_URL='http://localhost:3000'
+AUTH0_BASE_URL='http://localhost:3003'
 AUTH0_ISSUER_BASE_URL='dev-16eeg51tui1oqj3s.us.auth0.com'
 AUTH0_CLIENT_ID='Ds306azmqYuehWbFmNC1hywiXdPy66OK'
 AUTH0_CLIENT_SECRET='scWhVP8P53ul9h2SUxRrl28nRNfkCCN14FYhwdSQ2SAfsLPRDn-OyDOzVjE0FVxA'
