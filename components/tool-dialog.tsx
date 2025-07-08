@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -39,7 +39,85 @@ export function ToolDialog({ open, onOpenChange, tool, onSaved }: ToolDialogProp
     status: "active" as const,
   })
   const [loading, setLoading] = useState(false)
+  const [ogData, setOgData] = useState<{
+    title?: string
+    description?: string
+    image?: string
+    siteName?: string
+  } | null>(null)
+  const [fetchingOg, setFetchingOg] = useState(false)
+  const [ogError, setOgError] = useState<string | null>(null)
   const { toast } = useToast()
+
+  // Function to fetch OpenGraph data
+  const fetchOpenGraphData = useCallback(async (url: string) => {
+    if (!url || url.trim() === '') {
+      setOgData(null)
+      setOgError(null)
+      return
+    }
+
+    try {
+      // Validate URL format
+      new URL(url)
+    } catch {
+      setOgError('Invalid URL format')
+      return
+    }
+
+    setFetchingOg(true)
+    setOgError(null)
+
+    try {
+      console.log('Fetching OpenGraph data for:', url)
+      const response = await fetch('/api/opengraph', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: url.trim() }),
+      })
+
+      const result = await response.json()
+
+      if (result.success && result.data) {
+        setOgData({
+          title: result.data.title,
+          description: result.data.description,
+          image: result.data.image,
+          siteName: result.data.siteName,
+        })
+        
+        // Auto-fill form fields if they're empty
+        if (!formData.name && result.data.title) {
+          handleInputChange('name', result.data.title)
+        }
+        if (!formData.description && result.data.description) {
+          handleInputChange('description', result.data.description)
+        }
+      } else {
+        setOgError(result.error || 'Failed to fetch OpenGraph data')
+        setOgData(null)
+      }
+    } catch (error) {
+      console.error('Error fetching OpenGraph data:', error)
+      setOgError('Failed to fetch website information')
+      setOgData(null)
+    } finally {
+      setFetchingOg(false)
+    }
+  }, [formData.name, formData.description])
+
+  // Debounced URL change handler
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (formData.url && formData.url.trim() !== '') {
+        fetchOpenGraphData(formData.url)
+      }
+    }, 1000) // 1 second debounce
+
+    return () => clearTimeout(timeoutId)
+  }, [formData.url, fetchOpenGraphData])
 
   useEffect(() => {
     if (tool) {
@@ -136,6 +214,12 @@ export function ToolDialog({ open, onOpenChange, tool, onSaved }: ToolDialogProp
         cost_per_month: formData.cost_per_month ? Number.parseFloat(formData.cost_per_month) : null,
         status: formData.status,
         updated_at: new Date().toISOString(),
+        // Include OpenGraph metadata if available
+        og_title: ogData?.title || null,
+        og_description: ogData?.description || null,
+        og_image: ogData?.image || null,
+        og_site_name: ogData?.siteName || null,
+        og_last_fetched: ogData ? new Date().toISOString() : null,
       }
 
       console.log("Saving tool data:", toolData)
@@ -239,9 +323,23 @@ export function ToolDialog({ open, onOpenChange, tool, onSaved }: ToolDialogProp
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="url" className="text-sm font-roboto-mono uppercase tracking-wide">
-                URL *
-              </Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="url" className="text-sm font-roboto-mono uppercase tracking-wide">
+                  URL *
+                </Label>
+                {formData.url && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fetchOpenGraphData(formData.url)}
+                    disabled={fetchingOg}
+                    className="text-xs h-6"
+                  >
+                    {fetchingOg ? "Fetching..." : "Refresh"}
+                  </Button>
+                )}
+              </div>
               <Input
                 id="url"
                 type="url"
@@ -250,8 +348,44 @@ export function ToolDialog({ open, onOpenChange, tool, onSaved }: ToolDialogProp
                 placeholder="https://..."
                 required
               />
+              {fetchingOg && (
+                <p className="text-xs text-blue-600">Fetching website information...</p>
+              )}
+              {ogError && (
+                <p className="text-xs text-red-600">{ogError}</p>
+              )}
             </div>
           </div>
+
+          {/* OpenGraph Preview */}
+          {ogData && (
+            <div className="border rounded-lg p-4 bg-gray-50">
+              <h4 className="text-sm font-medium text-stone-gray mb-2">Website Preview</h4>
+              <div className="flex gap-3">
+                {ogData.image && (
+                  <img
+                    src={ogData.image}
+                    alt={ogData.title || 'Website preview'}
+                    className="w-16 h-16 object-cover rounded"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
+                )}
+                <div className="flex-1 min-w-0">
+                  {ogData.title && (
+                    <h5 className="font-medium text-sm text-stone-gray truncate">{ogData.title}</h5>
+                  )}
+                  {ogData.siteName && (
+                    <p className="text-xs text-blue-600 uppercase tracking-wide">{ogData.siteName}</p>
+                  )}
+                  {ogData.description && (
+                    <p className="text-xs text-stone-gray/80 line-clamp-2 mt-1">{ogData.description}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
