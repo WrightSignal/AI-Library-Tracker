@@ -170,6 +170,11 @@ export type Database = {
           created_by: string | null
           created_at: string
           updated_at: string
+          og_title: string | null
+          og_description: string | null
+          og_image: string | null
+          og_site_name: string | null
+          og_last_fetched: string | null
         }
         Insert: {
           id?: string
@@ -184,6 +189,11 @@ export type Database = {
           created_by?: string | null
           created_at?: string
           updated_at?: string
+          og_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_site_name?: string | null
+          og_last_fetched?: string | null
         }
         Update: {
           id?: string
@@ -198,6 +208,11 @@ export type Database = {
           created_by?: string | null
           created_at?: string
           updated_at?: string
+          og_title?: string | null
+          og_description?: string | null
+          og_image?: string | null
+          og_site_name?: string | null
+          og_last_fetched?: string | null
         }
       }
       user_tools: {
