@@ -14,6 +14,12 @@ export interface Tool {
   user_rating?: number | null
   average_rating?: number
   user_notes?: string | null
+  // OpenGraph metadata fields
+  og_title?: string | null
+  og_description?: string | null
+  og_image?: string | null
+  og_site_name?: string | null
+  og_last_fetched?: string | null
 }
 
 export interface User {
