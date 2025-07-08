@@ -134,3 +134,70 @@ If you encounter issues:
 3. **HTTPS requirement**: Auth0 requires HTTPS in production
 
 The application now has the basic Auth0 integration structure in place! 
+
+Perfect! I've successfully integrated OpenGraph.io into your SP-AI-Library application. Here's what has been implemented:
+
+## ✅ What's Been Added
+
+### 1. **OpenGraph Data Storage**
+- Updated `Tool` type definition with OpenGraph fields
+- Added database columns: `og_title`, `og_description`, `og_image`, `og_site_name`, `og_last_fetched`
+- Updated Supabase TypeScript definitions
+
+### 2. **OpenGraph API Service**
+- Created `/lib/opengraph.ts` with API integration functions
+- Added `/app/api/opengraph/route.ts` API endpoint
+- Supports both client-side and server-side fetching
+
+### 3. **Enhanced Tool Cards**
+- **Grid View**: Shows full OpenGraph images as headers with overlay action buttons
+- **List View**: Displays OpenGraph thumbnails and enhanced metadata
+- Falls back gracefully when OpenGraph data isn't available
+- Uses OpenGraph title/description when available, with fallbacks
+
+### 4. **Smart Tool Creation**
+- **Auto-fetch**: Automatically fetches OpenGraph data when URL is entered (1-second debounce)
+- **Auto-fill**: Populates tool name and description from OpenGraph data if fields are empty
+- **Manual refresh**: Button to manually re-fetch OpenGraph data
+- **Real-time preview**: Shows fetched website information in the form
+
+### 5. **Environment Configuration**
+- Updated `env.template` with OpenGraph API key placeholder
+
+## 🚀 Next Steps
+
+### 1. **Add Your API Key**
+Add this line to your `.env.local` file:
+```bash
+OPENGRAPH_API_KEY=059b12fd-de40-4999-b45e-8932b662a368
+```
+
+### 2. **Update Your Database**
+Run this SQL script in your Supabase SQL Editor:
+```sql
+-- Add OpenGraph metadata columns
+ALTER TABLE tools ADD COLUMN IF NOT EXISTS og_title TEXT;
+ALTER TABLE tools ADD COLUMN IF NOT EXISTS og_description TEXT;
+ALTER TABLE tools ADD COLUMN IF NOT EXISTS og_image TEXT;
+ALTER TABLE tools ADD COLUMN IF NOT EXISTS og_site_name TEXT;
+ALTER TABLE tools ADD COLUMN IF NOT EXISTS og_last_fetched TIMESTAMP WITH TIME ZONE;
+
+-- Create index for faster lookups
+CREATE INDEX IF NOT EXISTS idx_tools_og_last_fetched ON tools(og_last_fetched);
+```
+
+### 3. **Restart Your Dev Server**
+```bash
+pnpm dev
+```
+
+## 🎉 How It Works
+
+1. **When adding a new tool**: Enter a URL, and the system automatically fetches the website's OpenGraph metadata
+2. **Enhanced cards**: Tool cards now display rich previews with logos, proper titles, and descriptions
+3. **Smart fallbacks**: If OpenGraph data isn't available, it falls back to manually entered information
+4. **Manual control**: You can manually refresh OpenGraph data using the "Refresh" button
+
+The integration seamlessly enhances your existing tool library with rich visual previews and metadata, making your tool cards much more attractive and informative!
+
+Try adding a new tool with a URL like `https://openai.com` or `https://github.com` to see the OpenGraph integration in action! 🚀 
