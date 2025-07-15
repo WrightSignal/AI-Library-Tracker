@@ -64,6 +64,7 @@ export const mockTools = [
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     average_rating: 4.8,
+    favicon_url: "https://chat.openai.com/favicon.ico",
   },
   {
     id: "2",
@@ -79,6 +80,7 @@ export const mockTools = [
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     average_rating: 4.5,
+    favicon_url: "https://github.com/favicon.ico",
   },
   {
     id: "3",
@@ -94,6 +96,7 @@ export const mockTools = [
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     average_rating: 4.2,
+    favicon_url: "https://midjourney.com/favicon.ico",
   },
   {
     id: "4",
@@ -109,6 +112,7 @@ export const mockTools = [
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     average_rating: 4.0,
+    favicon_url: "https://notion.so/favicon.ico",
   },
   {
     id: "5",
@@ -124,6 +128,7 @@ export const mockTools = [
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     average_rating: 4.3,
+    favicon_url: "https://grammarly.com/favicon.ico",
   },
 ]
 
@@ -175,6 +180,7 @@ export type Database = {
           og_image: string | null
           og_site_name: string | null
           og_last_fetched: string | null
+          favicon_url: string | null
         }
         Insert: {
           id?: string
@@ -194,6 +200,7 @@ export type Database = {
           og_image?: string | null
           og_site_name?: string | null
           og_last_fetched?: string | null
+          favicon_url?: string | null
         }
         Update: {
           id?: string
@@ -213,6 +220,7 @@ export type Database = {
           og_image?: string | null
           og_site_name?: string | null
           og_last_fetched?: string | null
+          favicon_url?: string | null
         }
       }
       user_tools: {

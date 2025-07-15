@@ -60,6 +60,15 @@ export function ToolCard({ tool, viewMode, onEdit, onDelete, getStatusColor, get
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 flex-1 min-w-0">
+              {/* Favicon */}
+              {tool.favicon_url && (
+                <img
+                  src={tool.favicon_url}
+                  alt="favicon"
+                  className="w-6 h-6 rounded mr-2 border border-gray-200 bg-white"
+                  onError={(e) => { e.currentTarget.style.display = 'none' }}
+                />
+              )}
               {/* OpenGraph Image Thumbnail */}
               {tool.og_image && (
                 <div className="flex-shrink-0">
@@ -204,7 +213,16 @@ export function ToolCard({ tool, viewMode, onEdit, onDelete, getStatusColor, get
 
       <CardHeader className={tool.og_image ? "pb-3" : "pb-3"}>
         <div className="flex items-start justify-between">
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            {/* Favicon */}
+            {tool.favicon_url && (
+              <img
+                src={tool.favicon_url}
+                alt="favicon"
+                className="w-6 h-6 rounded border border-gray-200 bg-white"
+                onError={(e) => { e.currentTarget.style.display = 'none' }}
+              />
+            )}
             {/* Use OpenGraph title if available, fallback to tool name */}
             <CardTitle className="text-lg text-stone-gray truncate mb-1">
               {tool.og_title || tool.name}

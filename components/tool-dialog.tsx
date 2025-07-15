@@ -44,6 +44,7 @@ export function ToolDialog({ open, onOpenChange, tool, onSaved }: ToolDialogProp
     description?: string
     image?: string
     siteName?: string
+    favicon_url?: string
   } | null>(null)
   const [fetchingOg, setFetchingOg] = useState(false)
   const [ogError, setOgError] = useState<string | null>(null)
@@ -86,6 +87,7 @@ export function ToolDialog({ open, onOpenChange, tool, onSaved }: ToolDialogProp
           description: result.data.description,
           image: result.data.image,
           siteName: result.data.siteName,
+          favicon_url: result.data.favicon_url,
         })
         
         // Auto-fill form fields if they're empty
@@ -220,6 +222,7 @@ export function ToolDialog({ open, onOpenChange, tool, onSaved }: ToolDialogProp
         og_image: ogData?.image || null,
         og_site_name: ogData?.siteName || null,
         og_last_fetched: ogData ? new Date().toISOString() : null,
+        favicon_url: ogData?.favicon_url || null,
       }
 
       console.log("Saving tool data:", toolData)

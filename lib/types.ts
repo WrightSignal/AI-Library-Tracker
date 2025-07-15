@@ -20,6 +20,7 @@ export interface Tool {
   og_image?: string | null
   og_site_name?: string | null
   og_last_fetched?: string | null
+  favicon_url?: string | null
 }
 
 export interface User {

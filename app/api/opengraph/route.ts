@@ -25,6 +25,8 @@ export async function POST(request: NextRequest) {
     console.log('API: Fetching OpenGraph data for:', url)
     const result = await fetchOpenGraphDataServer(url)
 
+    // result.data now includes favicon_url
+
     return NextResponse.json(result)
   } catch (error) {
     console.error('API: Error in OpenGraph route:', error)

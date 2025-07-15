@@ -5,6 +5,7 @@ export interface OpenGraphData {
   siteName?: string
   url?: string
   type?: string
+  favicon_url?: string
 }
 
 export interface OpenGraphResponse {
@@ -101,6 +102,9 @@ export async function fetchOpenGraphDataServer(url: string): Promise<OpenGraphRe
     const result = await response.json()
     const ogData = result.hybridGraph || result.openGraph || result
     
+    // Get favicon URL
+    const favicon_url = await getFaviconUrl(url)
+    
     return {
       success: true,
       data: {
@@ -109,7 +113,8 @@ export async function fetchOpenGraphDataServer(url: string): Promise<OpenGraphRe
         image: ogData.image || ogData.og_image,
         siteName: ogData.site_name || ogData.og_site_name,
         url: ogData.url || url,
-        type: ogData.type || ogData.og_type
+        type: ogData.type || ogData.og_type,
+        favicon_url,
       }
     }
   } catch (error) {
@@ -131,5 +136,15 @@ export function isValidUrlForScraping(url: string): boolean {
     return urlObj.protocol === 'http:' || urlObj.protocol === 'https:'
   } catch {
     return false
+  }
+} 
+
+export async function getFaviconUrl(siteUrl: string): Promise<string> {
+  try {
+    const urlObj = new URL(siteUrl)
+    // Use DuckDuckGo's favicon service (reliable, supports .ico, .png, .svg)
+    return `https://icons.duckduckgo.com/ip3/${urlObj.hostname}.ico`
+  } catch {
+    return ''
   }
 } 
